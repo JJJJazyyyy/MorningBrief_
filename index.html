@@ -55,8 +55,12 @@ a{color:inherit}
   border-top:1px solid var(--line);
   position:relative; left:50%; transform:translateX(-50%);
   width:min(1640px, calc(100vw - 64px))}
-.duo2{align-items:flex-start}
-.duo2>.col{flex:1 1 440px; min-width:0}
+.duo2{align-items:stretch}
+.duo2>.col{flex:1 1 440px; min-width:0; display:flex; flex-direction:column}
+.duo2>.col>.frail{flex:1 1 auto; display:flex; flex-direction:column}
+.duo2>.col>.frail>.fev{flex:1 1 auto}
+.duo2>.col>.frail>.fsep{flex:0 0 auto}
+.duo2 .pmchart{height:100%}
 @media (max-width:1420px){
   .duo2{position:static; left:auto; transform:none; width:auto}
 }
@@ -66,10 +70,12 @@ a{color:inherit}
 
 /* 오전장 차트 */
 .pmchart{background:var(--card); border-radius:var(--r-l); box-shadow:var(--lift);
-  padding:20px 22px}
+  padding:20px 22px; display:flex; flex-direction:column}
+.pmchart .lg{flex:1 1 auto}
 .pmchart .cv{width:100%}
 .pmchart .cv svg{display:block; width:100%; height:auto}
-.pmchart .lg{margin-top:14px; border-top:1px solid var(--line2); padding-top:6px}
+.pmchart .lg{margin-top:14px; border-top:1px solid var(--line2); padding-top:6px;
+  display:flex; flex-direction:column; justify-content:space-around}
 .pmchart .lg div.r{display:flex; gap:12px; align-items:center; padding:clamp(9px,1vw,13px) 0}
 .pmchart .lg div.r + div.r{border-top:1px solid var(--line)}
 .pmchart .lg k{flex:0 0 19px; height:19px; border-radius:50%; border:1.6px solid currentColor;
