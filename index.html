@@ -902,7 +902,7 @@ window.renderBrief = function(D){
   /* 오전장 지수 차트 — 전일 종가를 기준선으로 위는 빨강 아래는 파랑 */
   var pmChart = function(C){
     if (!C || !C.points || C.points.length < 2) return '';
-    var W = 340, H = 176, L = 18, R = 322, T = 14, B = 112;
+    var W = 340, H = 176, L = 18, R = 322, T = 14, B = 110;
     var vals = C.points.map(function(p){ return p.v; }).concat([C.base]);
     var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
     var pad = (hi - lo) * 0.25 || 1; lo -= pad; hi += pad;
@@ -917,8 +917,8 @@ window.renderBrief = function(D){
       var i = m.i, v = C.points[i] ? C.points[i].v : C.base;
       var up = v >= C.base, col = up ? 'var(--up)' : 'var(--down)';
       /* 차트 면에는 작은 점만, 번호 동그라미는 시간축 아래로 내린다 */
-      var bx = X(i).toFixed(1), by = Y(v).toFixed(1), ny = 140;
-      dots += '<line x1="' + bx + '" y1="' + by + '" x2="' + bx + '" y2="' + (ny - 10) + '" stroke="var(--line2)" stroke-width="1"/>'
+      var bx = X(i).toFixed(1), by = Y(v).toFixed(1), ny = 158;
+      dots += '<line x1="' + bx + '" y1="' + by + '" x2="' + bx + '" y2="' + (ny - 32) + '" stroke="var(--line2)" stroke-width="1"/>'
             + '<circle cx="' + bx + '" cy="' + by + '" r="3.6" fill="var(--card)" stroke="' + col + '" stroke-width="1.4"/>'
             + '<circle cx="' + bx + '" cy="' + ny + '" r="8" fill="var(--card)" stroke="' + col + '" stroke-width="1.2"/>'
             + '<text x="' + bx + '" y="' + (ny + 3.3) + '" text-anchor="middle" font-size="9.5" font-weight="500" fill="' + col + '">' + (n + 1) + '</text>';
@@ -927,6 +927,21 @@ window.renderBrief = function(D){
     (C.tail || []).forEach(function(m){
       rows += '<div class="r"><k></k><t>' + esc(m.time) + '</t><p>' + SEG(m.text) + '</p></div>';
     });
+    /* 정시 눈금 — points 안에서 '분'이 00인 시각을 고른다 */
+    var ticks = '', seen = {};
+    C.points.forEach(function(p, idx){
+      var t = String(p.t || '');
+      if (!/:00$/.test(t) || seen[t]) return;
+      seen[t] = 1;
+      ticks += '<text x="' + X(idx).toFixed(1) + '" y="132" text-anchor="middle" '
+             + 'font-size="10.5" fill="var(--ink3)">' + esc(t) + '</text>';
+    });
+    /* 마지막 점의 시각은 오른쪽 끝에 따로 */
+    var lastT = String(C.points[C.points.length - 1].t || '');
+    if (!seen[lastT]) {
+      ticks += '<text x="' + R + '" y="132" text-anchor="end" '
+             + 'font-size="10.5" fill="var(--ink3)">' + esc(lastT) + '</text>';
+    }
     var nowUp = C.now && String(C.now.d).charAt(0) !== '−' && String(C.now.d).charAt(0) !== '-';
     return '<div class="pmchart"><div class="cv">'
       + '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img"><title>오전장 지수 흐름</title><defs>'
@@ -940,8 +955,7 @@ window.renderBrief = function(D){
       + '<path d="' + line + '" fill="none" stroke="var(--up)" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#cu' + u + ')"/>'
       + '<path d="' + line + '" fill="none" stroke="var(--down)" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#cd' + u + ')"/>'
       + dots
-      + '<text x="' + L + '" y="168" text-anchor="start" font-size="10.5" fill="var(--ink3)">' + esc(C.points[0].t || '') + '</text>'
-      + '<text x="' + R + '" y="168" text-anchor="end" font-size="10.5" fill="var(--ink3)">' + esc(C.points[C.points.length - 1].t || '') + '</text>'
+      + ticks
       + '<text x="' + (R + 4) + '" y="' + (yb - 4).toFixed(1) + '" text-anchor="end" font-size="9.5" fill="var(--ink3)">' + esc(C.baseLabel || '') + '</text>'
       + '</svg></div><div class="lg">' + rows
       + (C.now ? '<div class="now">' + esc(C.now.k || '코스피') + ' <b class="' + (nowUp ? 'up' : 'down') + '">' + esc(C.now.v) + '</b> '
