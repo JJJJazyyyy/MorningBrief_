@@ -51,9 +51,14 @@ a{color:inherit}
 .part.am em{color:var(--ink3)}
 
 /* 오늘 오전과 어제를 나란히 */
-.duo2{display:flex; gap:20px; flex-wrap:wrap; padding-top:40px; margin-top:40px;
-  border-top:1px solid var(--line)}
-.duo2>.col{flex:1 1 320px; min-width:0}
+.duo2{display:flex; gap:24px; flex-wrap:wrap; padding-top:40px; margin-top:40px;
+  border-top:1px solid var(--line);
+  position:relative; left:50%; transform:translateX(-50%);
+  width:min(1640px, calc(100vw - 64px))}
+.duo2>.col{flex:1 1 440px; min-width:0}
+@media (max-width:1420px){
+  .duo2{position:static; left:auto; transform:none; width:auto}
+}
 .duo2 .part{margin-bottom:14px}
 .duo2 .part h2{font-size:clamp(19px,2vw,23px)}
 .duo2 .frail{margin:0; padding:0}
