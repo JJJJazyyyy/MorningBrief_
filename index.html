@@ -902,10 +902,10 @@ window.renderBrief = function(D){
   /* 오전장 지수 차트 — 전일 종가를 기준선으로 위는 빨강 아래는 파랑 */
   var pmChart = function(C){
     if (!C || !C.points || C.points.length < 2) return '';
-    var W = 340, H = 176, L = 18, R = 322, T = 14, B = 110;
+    var W = 340, H = 176, L = 18, R = 322, T = 8, B = 116;
     var vals = C.points.map(function(p){ return p.v; }).concat([C.base]);
     var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
-    var pad = (hi - lo) * 0.25 || 1; lo -= pad; hi += pad;
+    var pad = (hi - lo) * 0.10 || 1; lo -= pad; hi += pad;
     var X = function(i){ return L + (R - L) * (i / (C.points.length - 1)); };
     var Y = function(v){ return B - (B - T) * ((v - lo) / (hi - lo)); };
     var yb = Y(C.base);
@@ -918,7 +918,7 @@ window.renderBrief = function(D){
       var up = v >= C.base, col = up ? 'var(--up)' : 'var(--down)';
       /* 차트 면에는 작은 점만, 번호 동그라미는 시간축 아래로 내린다 */
       var bx = X(i).toFixed(1), by = Y(v).toFixed(1), ny = 158;
-      dots += '<line x1="' + bx + '" y1="' + by + '" x2="' + bx + '" y2="' + (ny - 32) + '" stroke="var(--line2)" stroke-width="1"/>'
+      dots += '<line x1="' + bx + '" y1="' + by + '" x2="' + bx + '" y2="' + (ny - 9) + '" stroke="var(--line2)" stroke-width="1"/>'
             + '<circle cx="' + bx + '" cy="' + by + '" r="3.6" fill="var(--card)" stroke="' + col + '" stroke-width="1.4"/>'
             + '<circle cx="' + bx + '" cy="' + ny + '" r="8" fill="var(--card)" stroke="' + col + '" stroke-width="1.2"/>'
             + '<text x="' + bx + '" y="' + (ny + 3.3) + '" text-anchor="middle" font-size="9.5" font-weight="500" fill="' + col + '">' + (n + 1) + '</text>';
@@ -956,7 +956,7 @@ window.renderBrief = function(D){
       + '<path d="' + line + '" fill="none" stroke="var(--down)" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#cd' + u + ')"/>'
       + dots
       + ticks
-      + '<text x="' + (R + 4) + '" y="' + (yb - 4).toFixed(1) + '" text-anchor="end" font-size="9.5" fill="var(--ink3)">' + esc(C.baseLabel || '') + '</text>'
+      + '<text x="' + (R + 4) + '" y="' + (yb + 13).toFixed(1) + '" text-anchor="end" font-size="9.5" fill="var(--ink3)">' + esc(C.baseLabel || '') + '</text>'
       + '</svg></div><div class="lg">' + rows
       + (C.now ? '<div class="now">' + esc(C.now.k || '코스피') + ' <b class="' + (nowUp ? 'up' : 'down') + '">' + esc(C.now.v) + '</b> '
           + '<span class="' + (nowUp ? 'up' : 'down') + '" style="font-weight:700">' + esc(C.now.d) + '</span><s>장중</s></div>' : '')
