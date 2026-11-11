@@ -78,8 +78,8 @@ a{color:inherit}
   display:flex; flex-direction:column; justify-content:space-around}
 .pmchart .lg div.r{display:flex; gap:12px; align-items:center; padding:clamp(9px,1vw,13px) 0}
 .pmchart .lg div.r + div.r{border-top:1px solid var(--line)}
-.pmchart .lg k{flex:0 0 19px; height:19px; border-radius:50%; border:1.6px solid currentColor;
-  font-size:10.5px; font-weight:700; display:inline-flex; align-items:center;
+.pmchart .lg k{flex:0 0 19px; height:19px; border-radius:50%; border:1.2px solid currentColor;
+  font-size:11px; font-weight:500; display:inline-flex; align-items:center;
   justify-content:center; line-height:1; align-self:center}
 .pmchart .lg k:empty{border:0}
 .pmchart .lg t{flex:0 0 clamp(50px,4.5vw,64px); font-size:clamp(14px,1.3vw,17px);
@@ -920,8 +920,8 @@ window.renderBrief = function(D){
       var bx = X(i).toFixed(1), by = Y(v).toFixed(1), ny = 140;
       dots += '<line x1="' + bx + '" y1="' + by + '" x2="' + bx + '" y2="' + (ny - 10) + '" stroke="var(--line2)" stroke-width="1"/>'
             + '<circle cx="' + bx + '" cy="' + by + '" r="3.2" fill="' + col + '"/>'
-            + '<circle cx="' + bx + '" cy="' + ny + '" r="8" fill="var(--card)" stroke="' + col + '" stroke-width="1.6"/>'
-            + '<text x="' + bx + '" y="' + (ny + 3.3) + '" text-anchor="middle" font-size="9" font-weight="700" fill="' + col + '">' + (n + 1) + '</text>';
+            + '<circle cx="' + bx + '" cy="' + ny + '" r="8" fill="var(--card)" stroke="' + col + '" stroke-width="1.2"/>'
+            + '<text x="' + bx + '" y="' + (ny + 3.3) + '" text-anchor="middle" font-size="9.5" font-weight="500" fill="' + col + '">' + (n + 1) + '</text>';
       rows += '<div class="r"><k style="color:' + col + '">' + (n + 1) + '</k><t>' + esc(m.time) + '</t><p>' + SEG(m.text) + '</p></div>';
     });
     (C.tail || []).forEach(function(m){
