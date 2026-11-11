@@ -50,6 +50,14 @@ a{color:inherit}
 .part.am h2{color:var(--ink2)}
 .part.am em{color:var(--ink3)}
 
+/* 오늘 오전과 어제를 나란히 */
+.duo2{display:flex; gap:20px; flex-wrap:wrap; padding-top:40px; margin-top:40px;
+  border-top:1px solid var(--line)}
+.duo2>.col{flex:1 1 320px; min-width:0}
+.duo2 .part{margin-bottom:14px}
+.duo2 .part h2{font-size:clamp(19px,2vw,23px)}
+.duo2 .frail{margin:0; padding:0}
+
 /* 오전장 차트 */
 .pmchart{background:var(--card); border-radius:var(--r-l); box-shadow:var(--lift);
   padding:18px; display:flex; gap:20px; flex-wrap:wrap; align-items:center; margin-bottom:18px}
@@ -818,14 +826,26 @@ window.renderBrief = function(D){
 
   var T = D.timeline;
   if (T && T.items && T.items.length){
-    h += '<section class="blk narrow">' + sh(T.title || '어제 무슨 일이 있었나', T.sub || '');
-    h += '<div class="frail">';
+    var tl = '<div class="frail">';
     T.items.forEach(function(e, i){
-      if (i) h += '<div class="fsep"></div>';
+      if (i) tl += '<div class="fsep"></div>';
       var tone = ['up','down','flat','key'].indexOf(e.tone) >= 0 ? e.tone : 'flat';
-      h += '<div class="fev ' + tone + '"><time>' + esc(e.time) + '</time><p>' + SEG(e.text) + '</p></div>';
+      tl += '<div class="fev ' + tone + '"><time>' + esc(e.time) + '</time><p>' + SEG(e.text) + '</p></div>';
     });
-    h += '</div></section>';
+    tl += '</div>';
+
+    if (D.chart){
+      /* 오늘 오전 차트와 어제 타임라인을 나란히 */
+      h += '<div class="blk duo2">'
+         + '<div class="col"><div class="part"><h2>오늘 오전</h2>'
+         +   (D.chartAt ? '<em>' + esc(D.chartAt) + ' 업데이트</em>' : '') + '</div>'
+         +   pmChart(D.chart) + '</div>'
+         + '<div class="col"><div class="part am"><h2>' + esc(T.title || '어제 무슨 일이 있었나') + '</h2>'
+         +   (T.sub ? '<em>' + esc(T.sub) + '</em>' : '') + '</div>'
+         +   tl + '</div></div>';
+    } else {
+      h += '<section class="blk narrow">' + sh(T.title || '어제 무슨 일이 있었나', T.sub || '') + tl + '</section>';
+    }
 
     if (T.chain && T.chain.length){
       h += '<section class="blk narrow">' + sh(T.chainTitle || '콜 열자마자 이 순서로', T.chainSub || '');
@@ -911,19 +931,21 @@ window.renderBrief = function(D){
 
   var out;
   if (D.pm){
+    /* 오후 데이터는 아침 데이터 위에 덮인다. 헤드라인은 하나로 합쳐진다 */
     var P = {}, k;
     for (k in D) if (k !== 'pm') P[k] = D[k];
-    for (k in D.pm) P[k] = D.pm[k];
-    var pmTop = part('오후 시황', D.pm.at, false)
-      + '<h1 class="headline">' + SEG(P.headline) + '</h1>'
-      + (P.punch ? '<p class="punch">' + SEG(P.punch) + '</p>' : '')
-      + pmChart(D.pm.chart)
-      + (D.pm.close ? '<div class="pmclose"><b>' + esc(D.pm.close.label || '그래서 오후에') + '</b><p>' + SEG(D.pm.close.text) + '</p></div>' : '');
-    var pmNews = '';
+    for (k in D.pm) if (k !== 'sections' && k !== 'at') P[k] = D.pm[k];
+    P.chartAt = D.pm.at;
     if (D.pm.sections && D.pm.sections.length){
-      pmNews = buildSections(D.pm.sections);
+      var byId = {}, order = [];
+      (D.sections || []).forEach(function(s){ byId[s.id] = s; order.push(s.id); });
+      D.pm.sections.forEach(function(s){
+        if (!byId[s.id]) order.push(s.id);
+        byId[s.id] = s;
+      });
+      P.sections = order.map(function(id){ return byId[id]; });
     }
-    out = head + pmTop + pmNews + part('아침 시황', D.at, true) + buildBody(D);
+    out = head + buildBody(P);
   } else {
     out = head + buildBody(D);
   }
