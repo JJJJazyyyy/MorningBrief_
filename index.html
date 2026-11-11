@@ -902,7 +902,7 @@ window.renderBrief = function(D){
   /* 오전장 지수 차트 — 전일 종가를 기준선으로 위는 빨강 아래는 파랑 */
   var pmChart = function(C){
     if (!C || !C.points || C.points.length < 2) return '';
-    var W = 340, H = 160, L = 18, R = 322, T = 20, B = 130;
+    var W = 340, H = 176, L = 18, R = 322, T = 14, B = 112;
     var vals = C.points.map(function(p){ return p.v; }).concat([C.base]);
     var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
     var pad = (hi - lo) * 0.25 || 1; lo -= pad; hi += pad;
@@ -916,8 +916,12 @@ window.renderBrief = function(D){
     (C.marks || []).forEach(function(m, n){
       var i = m.i, v = C.points[i] ? C.points[i].v : C.base;
       var up = v >= C.base, col = up ? 'var(--up)' : 'var(--down)';
-      dots += '<circle cx="' + X(i).toFixed(1) + '" cy="' + Y(v).toFixed(1) + '" r="8" fill="var(--card)" stroke="' + col + '" stroke-width="1.6"/>'
-            + '<text x="' + X(i).toFixed(1) + '" y="' + (Y(v) + 3.3).toFixed(1) + '" text-anchor="middle" font-size="9" font-weight="700" fill="' + col + '">' + (n + 1) + '</text>';
+      /* 차트 면에는 작은 점만, 번호 동그라미는 시간축 아래로 내린다 */
+      var bx = X(i).toFixed(1), by = Y(v).toFixed(1), ny = 140;
+      dots += '<line x1="' + bx + '" y1="' + by + '" x2="' + bx + '" y2="' + (ny - 10) + '" stroke="var(--line2)" stroke-width="1"/>'
+            + '<circle cx="' + bx + '" cy="' + by + '" r="3.2" fill="' + col + '"/>'
+            + '<circle cx="' + bx + '" cy="' + ny + '" r="8" fill="var(--card)" stroke="' + col + '" stroke-width="1.6"/>'
+            + '<text x="' + bx + '" y="' + (ny + 3.3) + '" text-anchor="middle" font-size="9" font-weight="700" fill="' + col + '">' + (n + 1) + '</text>';
       rows += '<div class="r"><k style="color:' + col + '">' + (n + 1) + '</k><t>' + esc(m.time) + '</t><p>' + SEG(m.text) + '</p></div>';
     });
     (C.tail || []).forEach(function(m){
@@ -936,8 +940,8 @@ window.renderBrief = function(D){
       + '<path d="' + line + '" fill="none" stroke="var(--up)" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#cu' + u + ')"/>'
       + '<path d="' + line + '" fill="none" stroke="var(--down)" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#cd' + u + ')"/>'
       + dots
-      + '<text x="' + L + '" y="150" text-anchor="start" font-size="10.5" fill="var(--ink3)">' + esc(C.points[0].t || '') + '</text>'
-      + '<text x="' + R + '" y="150" text-anchor="end" font-size="10.5" fill="var(--ink3)">' + esc(C.points[C.points.length - 1].t || '') + '</text>'
+      + '<text x="' + L + '" y="168" text-anchor="start" font-size="10.5" fill="var(--ink3)">' + esc(C.points[0].t || '') + '</text>'
+      + '<text x="' + R + '" y="168" text-anchor="end" font-size="10.5" fill="var(--ink3)">' + esc(C.points[C.points.length - 1].t || '') + '</text>'
       + '<text x="' + (R + 4) + '" y="' + (yb - 4).toFixed(1) + '" text-anchor="end" font-size="9.5" fill="var(--ink3)">' + esc(C.baseLabel || '') + '</text>'
       + '</svg></div><div class="lg">' + rows
       + (C.now ? '<div class="now">' + esc(C.now.k || '코스피') + ' <b class="' + (nowUp ? 'up' : 'down') + '">' + esc(C.now.v) + '</b> '
