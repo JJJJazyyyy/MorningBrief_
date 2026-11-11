@@ -41,15 +41,35 @@ a{color:inherit}
 
 /* 머리 */
 .head{padding:32px 0 0}
-.tabs{display:flex; gap:8px; margin:0 0 24px}
-.tab{flex:1; text-align:left; border:0; cursor:pointer; border-radius:var(--r-m);
-  padding:11px 14px; background:var(--card); box-shadow:0 0 0 1px var(--line2);
-  font-family:inherit; transition:background .15s var(--ease)}
-.tab b{display:block; font-size:15px; font-weight:600; color:var(--ink2); letter-spacing:-.02em}
-.tab s{display:block; text-decoration:none; font-size:11px; color:var(--ink3); margin-top:3px}
-.tab.on{background:var(--blue); box-shadow:none}
-.tab.on b{color:#fff; font-weight:700}
-.tab.on s{color:rgba(255,255,255,.78)}
+/* 오후·아침 구간 제목 */
+.part{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+  border-left:5px solid var(--warn); padding-left:14px; margin:0 0 20px}
+.part h2{font-size:clamp(23px,2.6vw,29px); font-weight:800; letter-spacing:-.04em; margin:0; color:var(--ink)}
+.part em{font-style:normal; font-size:13px; font-weight:600; color:var(--warn)}
+.part.am{border-left-color:var(--ink3); margin-top:48px}
+.part.am h2{color:var(--ink2)}
+.part.am em{color:var(--ink3)}
+
+/* 오전장 차트 */
+.pmchart{background:var(--card); border-radius:var(--r-l); box-shadow:var(--lift);
+  padding:18px; display:flex; gap:20px; flex-wrap:wrap; align-items:center; margin-bottom:18px}
+.pmchart .cv{flex:1 1 280px; min-width:220px}
+.pmchart .cv svg{display:block; width:100%; height:auto}
+.pmchart .lg{flex:1 1 260px}
+.pmchart .lg div.r{display:flex; gap:10px; align-items:baseline; padding:6px 0}
+.pmchart .lg div.r + div.r{border-top:1px solid var(--line)}
+.pmchart .lg k{flex:0 0 16px; font-size:10.5px; font-weight:700}
+.pmchart .lg t{flex:0 0 46px; font-size:13px; font-weight:800; color:var(--ink)}
+.pmchart .lg p{margin:0; font-size:13.5px; color:var(--ink2)}
+.pmchart .now{margin-top:10px; padding-top:10px; border-top:1px solid var(--line2);
+  font-size:13px; color:var(--ink2)}
+.pmchart .now b{font-size:16px; font-weight:700}
+.pmchart .now s{text-decoration:none; font-size:11.5px; color:var(--ink3); margin-left:4px}
+.pmclose{background:var(--card); border-radius:var(--r-m); box-shadow:var(--lift);
+  padding:14px 16px; margin-bottom:8px}
+.pmclose b{display:block; font-size:11px; font-weight:700; letter-spacing:.12em;
+  color:var(--warn); margin-bottom:5px}
+.pmclose p{margin:0; font-size:15px; line-height:1.6; color:var(--ink)}
 .brand{display:block; height:32px; width:auto}
 .dateline{font-size:clamp(22px,2.5vw,32px); line-height:1.18; font-weight:800;
   color:var(--blue); letter-spacing:-.042em; margin:26px 0 22px}
@@ -711,51 +731,9 @@ window.renderBrief = function(D){
         + (D.logo ? '<img class="brand" src="' + esc(D.logo) + '" alt="신정투자그룹">' : '')
         + '<div class="dateline">' + esc(D.date) + '</div></div>';
 
-  /* 본문은 아침·오후가 같은 틀을 쓴다 */
-  var buildBody = function(D){
-  var h = '';
-  h += '<h1 class="headline">' + SEG(D.headline) + '</h1>'
-     + (D.punch ? '<p class="punch">' + SEG(D.punch) + '</p>' : '')
-     + (D.notice ? '<div class="notice">' + esc(D.notice) + '</div>' : '');
-
-  if (D.metrics && D.metrics.length){
-    h += '<div class="metrics">';
-    D.metrics.forEach(function(m){
-      var dir = ['up','down','flat','na'].indexOf(m.dir) >= 0 ? m.dir : 'flat';
-      h += '<div class="m"><b>' + (FLAG[m.flag] || '') + esc(m.k) + '</b>'
-         + '<i>' + esc(m.v) + '</i><u class="' + dir + '">' + esc(m.d) + '</u></div>';
-    });
-    h += '</div>';
-  }
-
-  var T = D.timeline;
-  if (T && T.items && T.items.length){
-    h += '<section class="blk narrow">' + sh(T.title || '어제 무슨 일이 있었나', T.sub || '');
-    h += '<div class="frail">';
-    T.items.forEach(function(e, i){
-      if (i) h += '<div class="fsep"></div>';
-      var tone = ['up','down','flat','key'].indexOf(e.tone) >= 0 ? e.tone : 'flat';
-      h += '<div class="fev ' + tone + '"><time>' + esc(e.time) + '</time><p>' + SEG(e.text) + '</p></div>';
-    });
-    h += '</div></section>';
-
-    if (T.chain && T.chain.length){
-      h += '<section class="blk narrow">' + sh(T.chainTitle || '콜 열자마자 이 순서로', T.chainSub || '');
-      h += '<div class="chain">';
-      T.chain.forEach(function(c, i){
-        if (i) h += '<div class="csep">›</div>';
-        h += '<div class="ch' + (i === T.chain.length - 1 ? ' end' : '') + '">'
-           + '<k>' + esc(c.k) + '</k><p>' + SEG(c.text) + '</p></div>';
-      });
-      h += '</div>';
-      if (T.close && T.close.text){
-        h += '<div class="chclose"><b>' + esc(T.close.label || '그래서 오늘') + '</b>' + esc(glue(T.close.text)) + '</div>';
-      }
-      h += '</section>';
-    }
-  }
-
-  (D.sections || []).forEach(function(sec){
+  var buildSections = function(list){
+    var h = '';
+  (list || []).forEach(function(sec){
     var items = (sec.items || []).slice().sort(function(a,b){ return (b.stars||0) - (a.stars||0); });
     if (sec.hot && !items.length) return;
     /* 4~5개는 한 줄, 6개 이상은 절반씩 두 줄. 최대 5열 */
@@ -818,6 +796,55 @@ window.renderBrief = function(D){
     h += '</div></section>';
   });
 
+    return h;
+  };
+
+  /* 본문은 아침·오후가 같은 틀을 쓴다 */
+  var buildBody = function(D){
+  var h = '';
+  h += '<h1 class="headline">' + SEG(D.headline) + '</h1>'
+     + (D.punch ? '<p class="punch">' + SEG(D.punch) + '</p>' : '')
+     + (D.notice ? '<div class="notice">' + esc(D.notice) + '</div>' : '');
+
+  if (D.metrics && D.metrics.length){
+    h += '<div class="metrics">';
+    D.metrics.forEach(function(m){
+      var dir = ['up','down','flat','na'].indexOf(m.dir) >= 0 ? m.dir : 'flat';
+      h += '<div class="m"><b>' + (FLAG[m.flag] || '') + esc(m.k) + '</b>'
+         + '<i>' + esc(m.v) + '</i><u class="' + dir + '">' + esc(m.d) + '</u></div>';
+    });
+    h += '</div>';
+  }
+
+  var T = D.timeline;
+  if (T && T.items && T.items.length){
+    h += '<section class="blk narrow">' + sh(T.title || '어제 무슨 일이 있었나', T.sub || '');
+    h += '<div class="frail">';
+    T.items.forEach(function(e, i){
+      if (i) h += '<div class="fsep"></div>';
+      var tone = ['up','down','flat','key'].indexOf(e.tone) >= 0 ? e.tone : 'flat';
+      h += '<div class="fev ' + tone + '"><time>' + esc(e.time) + '</time><p>' + SEG(e.text) + '</p></div>';
+    });
+    h += '</div></section>';
+
+    if (T.chain && T.chain.length){
+      h += '<section class="blk narrow">' + sh(T.chainTitle || '콜 열자마자 이 순서로', T.chainSub || '');
+      h += '<div class="chain">';
+      T.chain.forEach(function(c, i){
+        if (i) h += '<div class="csep">›</div>';
+        h += '<div class="ch' + (i === T.chain.length - 1 ? ' end' : '') + '">'
+           + '<k>' + esc(c.k) + '</k><p>' + SEG(c.text) + '</p></div>';
+      });
+      h += '</div>';
+      if (T.close && T.close.text){
+        h += '<div class="chclose"><b>' + esc(T.close.label || '그래서 오늘') + '</b>' + esc(glue(T.close.text)) + '</div>';
+      }
+      h += '</section>';
+    }
+  }
+
+  h += buildSections(D.sections);
+
   if (D.cal && D.cal.length){
     h += '<section class="blk cal">' + sh(D.calTitle || '다시 전화할 명분', D.calSub || '') + '<ul>';
     D.cal.forEach(function(c){
@@ -831,10 +858,55 @@ window.renderBrief = function(D){
   return h;
   };
 
-  var tabBtn = function(key, label, at, on){
-    return '<button class="tab' + (on ? ' on' : '') + '" data-p="' + key + '">'
-         + '<b>' + label + '</b>'
-         + (at ? '<s>업데이트 ' + esc(at) + '</s>' : '') + '</button>';
+  var part = function(label, at, am){
+    return '<div class="part' + (am ? ' am' : '') + '"><h2>' + label + '</h2>'
+         + (at ? '<em>' + esc(at) + ' 기준</em>' : '') + '</div>';
+  };
+
+  /* 오전장 지수 차트 — 전일 종가를 기준선으로 위는 빨강 아래는 파랑 */
+  var pmChart = function(C){
+    if (!C || !C.points || C.points.length < 2) return '';
+    var W = 340, H = 160, L = 18, R = 322, T = 20, B = 130;
+    var vals = C.points.map(function(p){ return p.v; }).concat([C.base]);
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    var pad = (hi - lo) * 0.25 || 1; lo -= pad; hi += pad;
+    var X = function(i){ return L + (R - L) * (i / (C.points.length - 1)); };
+    var Y = function(v){ return B - (B - T) * ((v - lo) / (hi - lo)); };
+    var yb = Y(C.base);
+    var line = C.points.map(function(p, i){ return (i ? 'L' : 'M') + X(i).toFixed(1) + ',' + Y(p.v).toFixed(1); }).join(' ');
+    var area = line + ' L' + R + ',' + yb.toFixed(1) + ' L' + L + ',' + yb.toFixed(1) + ' Z';
+    var u = 'u' + Math.random().toString(36).slice(2, 7);
+    var dots = '', rows = '';
+    (C.marks || []).forEach(function(m, n){
+      var i = m.i, v = C.points[i] ? C.points[i].v : C.base;
+      var up = v >= C.base, col = up ? 'var(--up)' : 'var(--down)';
+      dots += '<circle cx="' + X(i).toFixed(1) + '" cy="' + Y(v).toFixed(1) + '" r="9" fill="var(--card)" stroke="' + col + '" stroke-width="2"/>'
+            + '<text x="' + X(i).toFixed(1) + '" y="' + (Y(v) + 3.5).toFixed(1) + '" text-anchor="middle" font-size="10" font-weight="700" fill="' + col + '">' + (n + 1) + '</text>';
+      rows += '<div class="r"><k style="color:' + col + '">' + (n + 1) + '</k><t>' + esc(m.time) + '</t><p>' + SEG(m.text) + '</p></div>';
+    });
+    (C.tail || []).forEach(function(m){
+      rows += '<div class="r"><k></k><t>' + esc(m.time) + '</t><p>' + SEG(m.text) + '</p></div>';
+    });
+    var nowUp = C.now && String(C.now.d).charAt(0) !== '−' && String(C.now.d).charAt(0) !== '-';
+    return '<div class="pmchart"><div class="cv">'
+      + '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img"><title>오전장 지수 흐름</title><defs>'
+      + '<linearGradient id="gu' + u + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--up)" stop-opacity=".30"/><stop offset="100%" stop-color="var(--up)" stop-opacity="0"/></linearGradient>'
+      + '<linearGradient id="gd' + u + '" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="var(--down)" stop-opacity=".30"/><stop offset="100%" stop-color="var(--down)" stop-opacity="0"/></linearGradient>'
+      + '<clipPath id="cu' + u + '"><rect x="0" y="0" width="' + W + '" height="' + yb.toFixed(1) + '"/></clipPath>'
+      + '<clipPath id="cd' + u + '"><rect x="0" y="' + yb.toFixed(1) + '" width="' + W + '" height="' + (H - yb).toFixed(1) + '"/></clipPath></defs>'
+      + '<path d="' + area + '" fill="url(#gu' + u + ')" clip-path="url(#cu' + u + ')"/>'
+      + '<path d="' + area + '" fill="url(#gd' + u + ')" clip-path="url(#cd' + u + ')"/>'
+      + '<line x1="' + L + '" y1="' + yb.toFixed(1) + '" x2="' + R + '" y2="' + yb.toFixed(1) + '" stroke="var(--rail)" stroke-width="1" stroke-dasharray="4 3"/>'
+      + '<path d="' + line + '" fill="none" stroke="var(--up)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#cu' + u + ')"/>'
+      + '<path d="' + line + '" fill="none" stroke="var(--down)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#cd' + u + ')"/>'
+      + dots
+      + '<text x="' + L + '" y="150" text-anchor="start" font-size="10.5" fill="var(--ink3)">' + esc(C.points[0].t || '') + '</text>'
+      + '<text x="' + R + '" y="150" text-anchor="end" font-size="10.5" fill="var(--ink3)">' + esc(C.points[C.points.length - 1].t || '') + '</text>'
+      + '<text x="' + (R + 4) + '" y="' + (yb - 4).toFixed(1) + '" text-anchor="end" font-size="9.5" fill="var(--ink3)">' + esc(C.baseLabel || '') + '</text>'
+      + '</svg></div><div class="lg">' + rows
+      + (C.now ? '<div class="now">' + esc(C.now.k || '코스피') + ' <b class="' + (nowUp ? 'up' : 'down') + '">' + esc(C.now.v) + '</b> '
+          + '<span class="' + (nowUp ? 'up' : 'down') + '" style="font-weight:700">' + esc(C.now.d) + '</span><s>장중</s></div>' : '')
+      + '</div></div>';
   };
 
   var out;
@@ -842,29 +914,20 @@ window.renderBrief = function(D){
     var P = {}, k;
     for (k in D) if (k !== 'pm') P[k] = D[k];
     for (k in D.pm) P[k] = D.pm[k];
-    out = head
-        + '<div class="tabs">'
-        +   tabBtn('P', '오후 시황', D.pm.at, true)
-        +   tabBtn('A', '아침 시황', D.at, false)
-        + '</div>'
-        + '<div id="paneP">' + buildBody(P) + '</div>'
-        + '<div id="paneA" hidden>' + buildBody(D) + '</div>';
+    var pmTop = part('오후 시황', D.pm.at, false)
+      + '<h1 class="headline">' + SEG(P.headline) + '</h1>'
+      + (P.punch ? '<p class="punch">' + SEG(P.punch) + '</p>' : '')
+      + pmChart(D.pm.chart)
+      + (D.pm.close ? '<div class="pmclose"><b>' + esc(D.pm.close.label || '그래서 오후에') + '</b><p>' + SEG(D.pm.close.text) + '</p></div>' : '');
+    var pmNews = '';
+    if (D.pm.sections && D.pm.sections.length){
+      pmNews = buildSections(D.pm.sections);
+    }
+    out = head + pmTop + pmNews + part('아침 시황', D.at, true) + buildBody(D);
   } else {
     out = head + buildBody(D);
   }
   document.getElementById('APP').innerHTML = out + '</div>';
-
-  var tabs = document.querySelectorAll('.tab');
-  Array.prototype.forEach.call(tabs, function(b){
-    b.addEventListener('click', function(){
-      var key = b.getAttribute('data-p');
-      Array.prototype.forEach.call(tabs, function(x){ x.classList.remove('on'); });
-      b.classList.add('on');
-      document.getElementById('paneP').hidden = (key !== 'P');
-      document.getElementById('paneA').hidden = (key !== 'A');
-      window.scrollTo(0, 0);
-    });
-  });
 };
 
 /* ── 데이터 가져오기 ──────────────────────────────────────────
