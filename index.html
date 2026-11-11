@@ -919,7 +919,7 @@ window.renderBrief = function(D){
       /* 차트 면에는 작은 점만, 번호 동그라미는 시간축 아래로 내린다 */
       var bx = X(i).toFixed(1), by = Y(v).toFixed(1), ny = 140;
       dots += '<line x1="' + bx + '" y1="' + by + '" x2="' + bx + '" y2="' + (ny - 10) + '" stroke="var(--line2)" stroke-width="1"/>'
-            + '<circle cx="' + bx + '" cy="' + by + '" r="3.2" fill="' + col + '"/>'
+            + '<circle cx="' + bx + '" cy="' + by + '" r="3.6" fill="var(--card)" stroke="' + col + '" stroke-width="1.4"/>'
             + '<circle cx="' + bx + '" cy="' + ny + '" r="8" fill="var(--card)" stroke="' + col + '" stroke-width="1.2"/>'
             + '<text x="' + bx + '" y="' + (ny + 3.3) + '" text-anchor="middle" font-size="9.5" font-weight="500" fill="' + col + '">' + (n + 1) + '</text>';
       rows += '<div class="r"><k style="color:' + col + '">' + (n + 1) + '</k><t>' + esc(m.time) + '</t><p>' + SEG(m.text) + '</p></div>';
