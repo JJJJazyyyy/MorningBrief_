@@ -55,6 +55,7 @@ a{color:inherit}
   border-top:1px solid var(--line);
   position:relative; left:50%; transform:translateX(-50%);
   width:min(1640px, calc(100vw - 64px))}
+.duo2{align-items:flex-start}
 .duo2>.col{flex:1 1 440px; min-width:0}
 @media (max-width:1420px){
   .duo2{position:static; left:auto; transform:none; width:auto}
@@ -65,15 +66,16 @@ a{color:inherit}
 
 /* 오전장 차트 */
 .pmchart{background:var(--card); border-radius:var(--r-l); box-shadow:var(--lift);
-  padding:18px; display:flex; gap:20px; flex-wrap:wrap; align-items:center; margin-bottom:18px}
-.pmchart .cv{flex:1 1 280px; min-width:220px}
+  padding:20px 22px}
+.pmchart .cv{width:100%}
 .pmchart .cv svg{display:block; width:100%; height:auto}
-.pmchart .lg{flex:1 1 260px}
-.pmchart .lg div.r{display:flex; gap:10px; align-items:baseline; padding:6px 0}
+.pmchart .lg{margin-top:14px; border-top:1px solid var(--line2); padding-top:6px}
+.pmchart .lg div.r{display:flex; gap:12px; align-items:baseline; padding:clamp(9px,1vw,13px) 0}
 .pmchart .lg div.r + div.r{border-top:1px solid var(--line)}
-.pmchart .lg k{flex:0 0 16px; font-size:10.5px; font-weight:700}
-.pmchart .lg t{flex:0 0 46px; font-size:13px; font-weight:800; color:var(--ink)}
-.pmchart .lg p{margin:0; font-size:13.5px; color:var(--ink2)}
+.pmchart .lg k{flex:0 0 18px; font-size:11.5px; font-weight:700}
+.pmchart .lg t{flex:0 0 clamp(50px,4.5vw,64px); font-size:clamp(14px,1.3vw,17px);
+  font-weight:800; color:var(--ink); letter-spacing:-.02em}
+.pmchart .lg p{margin:0; font-size:clamp(14px,1.3vw,17px); line-height:1.5; color:var(--ink2)}
 .pmchart .now{margin-top:10px; padding-top:10px; border-top:1px solid var(--line2);
   font-size:13px; color:var(--ink2)}
 .pmchart .now b{font-size:16px; font-weight:700}
@@ -122,17 +124,17 @@ a{color:inherit}
 .frail{display:block; padding:0; margin:18px 0 0}
 .blk.narrow{max-width:880px; margin-left:auto; margin-right:auto}
 .blk.hot{max-width:880px; margin-left:auto; margin-right:auto}
-.fev{display:flex; align-items:baseline; gap:clamp(14px,2vw,28px);
+.fev{display:flex; align-items:center; gap:clamp(12px,1.6vw,22px);
   background:var(--card); border-radius:var(--r-m); box-shadow:var(--lift);
-  padding:clamp(16px,1.8vw,22px) clamp(18px,2vw,26px); border:0}
+  padding:clamp(11px,1.1vw,15px) clamp(16px,1.7vw,22px); border:0; min-height:0}
 .fev.key{box-shadow:var(--lift2)}
-.fev time{flex:0 0 auto; min-width:clamp(74px,7vw,104px);
-  font-size:clamp(16px,1.5vw,20px); font-weight:800; color:var(--ink);
-  letter-spacing:-.02em; line-height:1.3; white-space:nowrap}
-.fev p{margin:0; flex:1 1 auto; font-size:clamp(16px,1.55vw,20px);
-  line-height:1.5; color:var(--ink2); letter-spacing:-.018em}
+.fev time{flex:0 0 auto; min-width:clamp(64px,5.5vw,86px);
+  font-size:clamp(14px,1.3vw,17px); font-weight:800; color:var(--ink);
+  letter-spacing:-.02em; line-height:1.4; white-space:nowrap}
+.fev p{margin:0; flex:1 1 auto; font-size:clamp(14px,1.35vw,17px);
+  line-height:1.45; color:var(--ink2); letter-spacing:-.018em}
 /* 박스 사이를 잇는 갈매기 화살표 */
-.fsep{position:relative; height:clamp(22px,2.4vw,30px)}
+.fsep{position:relative; height:clamp(16px,1.6vw,22px)}
 .fsep::after{content:""; position:absolute; left:50%; top:50%;
   width:9px; height:9px;
   border-right:1.5px solid var(--ink4); border-bottom:1.5px solid var(--ink4);
