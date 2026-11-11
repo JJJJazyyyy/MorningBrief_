@@ -57,6 +57,7 @@ a{color:inherit}
   width:min(1640px, calc(100vw - 64px))}
 .duo2{align-items:stretch}
 .duo2>.col{flex:1 1 440px; min-width:0; display:flex; flex-direction:column}
+.duo2>.col>.part{align-items:baseline}
 .duo2>.col>.frail{flex:1 1 auto; display:flex; flex-direction:column}
 .duo2>.col>.frail>.fev{flex:1 1 auto}
 .duo2>.col>.frail>.fsep{flex:0 0 auto}
@@ -64,8 +65,11 @@ a{color:inherit}
 @media (max-width:1420px){
   .duo2{position:static; left:auto; transform:none; width:auto}
 }
-.duo2 .part{margin-bottom:14px}
-.duo2 .part h2{font-size:clamp(19px,2vw,23px)}
+.duo2 .part{margin:0 0 14px}
+.duo2 .part.am{margin-top:0}
+.duo2 .part h2{font-size:clamp(19px,2vw,23px); line-height:1.3}
+.duo2 .part em{font-size:12.5px}
+.duo2>.col>.part{min-height:calc(1.3em * 1 + 0px)}
 .duo2 .frail{margin:0; padding:0}
 
 /* 오전장 차트 */
